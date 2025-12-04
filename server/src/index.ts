@@ -5,6 +5,8 @@ import bodyparser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import projectRoutes from './routes/projectRoutes.ts';
+import taskRoutes from './routes/taskRoutes.ts';
 /* Routes Imports */
 
 /*Configurations*/
@@ -24,6 +26,10 @@ app.use(cors());
 app.get('/', (req, res) => {
     res.send('This is home port');
 });
+
+app.use('/projects', projectRoutes);
+
+app.use('/tasks', taskRoutes);
 
 /*SERVER*/
 const PORT = process.env.PORT || 6000;
