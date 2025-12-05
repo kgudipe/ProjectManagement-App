@@ -7,6 +7,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import projectRoutes from './routes/projectRoutes.ts';
 import taskRoutes from './routes/taskRoutes.ts';
+import searchRoutes from './routes/searchRoutes.ts'
+import userRoutes from './routes/userRoutes.ts'
+import teamRoutes from "./routes/teamRoutes.ts";
 /* Routes Imports */
 
 /*Configurations*/
@@ -30,6 +33,12 @@ app.get('/', (req, res) => {
 app.use('/projects', projectRoutes);
 
 app.use('/tasks', taskRoutes);
+
+app.use('/search', searchRoutes)
+
+app.use('/users', userRoutes)
+
+app.use("/teams", teamRoutes);
 
 /*SERVER*/
 const PORT = process.env.PORT || 6000;

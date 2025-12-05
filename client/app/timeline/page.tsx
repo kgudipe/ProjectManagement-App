@@ -78,7 +78,6 @@ const Timeline = () => {
             
           </div>
         </div>
-
   )
 }
 

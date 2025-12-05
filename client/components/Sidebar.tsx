@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image';
-import { AlertCircle, AlertOctagon, AlertTriangle, Briefcase, ChevronDown, ChevronUp, Divide, Home, Icon, Layers3, LockIcon, LucideIcon, Search, ShieldAlert, User, Users, X } from 'lucide-react';
+import { AlertCircle, AlertOctagon, AlertTriangle, Briefcase, ChevronDown, ChevronUp, Divide, Home, Icon, Layers3, LockIcon, LucideIcon, Search, Settings, ShieldAlert, User, Users, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@/app/redux';
 import { useDispatch } from 'react-redux';
@@ -55,7 +55,7 @@ const Sidebar = () => {
           <SidebarLink href='/' icon={Home} label='Home' />
           <SidebarLink href='/timeline' icon={Briefcase} label='Timeline' />
           <SidebarLink href='/search' icon={Search} label='Search' />
-          <SidebarLink href='/settings' icon={Home} label='Home' />
+          <SidebarLink href='/settings' icon={Settings} label='Settings' />
           <SidebarLink href='/users' icon={User} label='Users' />
           <SidebarLink href='/teams' icon={Users} label='Teams' />
         </nav>
