@@ -1,10 +1,8 @@
-import type { Request, Response } from "express";
-import pkg from "@prisma/client";
+import type{ Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as dotenv from "dotenv";
 dotenv.config();
-
-const { PrismaClient } = pkg;     
 
 const adapter = new PrismaPg({ 
   connectionString: process.env.DATABASE_URL 
