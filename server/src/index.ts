@@ -5,11 +5,11 @@ import bodyparser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import projectRoutes from './routes/projectRoutes.ts';
-import taskRoutes from './routes/taskRoutes.ts';
-import searchRoutes from './routes/searchRoutes.ts'
-import userRoutes from './routes/userRoutes.ts'
-import teamRoutes from "./routes/teamRoutes.ts";
+import projectRoutes from './routes/projectRoutes.js';
+import taskRoutes from './routes/taskRoutes.js';
+import searchRoutes from './routes/searchRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import teamRoutes from "./routes/teamRoutes.js";
 /* Routes Imports */
 
 /*Configurations*/
