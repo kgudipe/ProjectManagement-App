@@ -30,7 +30,7 @@ export enum Status {
 
 export interface User {
   userId?: number;
-  userName: string;
+  username: string;
   email: string;
   profilePictureUrl?: string;
   cognitoId?: string;
@@ -40,7 +40,7 @@ export interface User {
 export interface Attachment {
   id: number;
   fileName: string;
-  fileUrl: string;
+  fileURL: string;
   uploadedById: number;
   taskId: number;
 }

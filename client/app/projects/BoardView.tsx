@@ -192,7 +192,7 @@ const Task = ({ task }: TaskProps) => {
                             <Image
                                 key={task.assignee.userId}
                                 src={`/${task.assignee.profilePictureUrl}`}
-                                alt={task.assignee.userName}
+                                alt={task.assignee.username}
                                 width={30}
                                 height={30}
                                 className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-dark-secondary"
@@ -202,7 +202,7 @@ const Task = ({ task }: TaskProps) => {
                             <Image
                                 key={task.author.userId}
                                 src={`/${task.author.profilePictureUrl}`}
-                                alt={task.author.userName}
+                                alt={task.author.username}
                                 width={30}
                                 height={30}
                                 className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-dark-secondary"
