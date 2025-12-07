@@ -18,7 +18,7 @@ const UserCard = ({ user }: Props) => {
                     className='rounded-full'/>
             )}
             <div>
-                <h3>{user.userName}</h3>
+                <h3>{user.username}</h3>
                 <h3>{user.email}</h3>
             </div>
         </div>
