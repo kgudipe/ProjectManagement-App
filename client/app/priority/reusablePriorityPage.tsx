@@ -93,7 +93,9 @@ const ReusablePriorityPage = ({ priority }: Props) => {
     (task: Task) => task.priority === priority,
   );
 
-  if (isTasksError || !tasks) return <div>Error fetching tasks</div>;
+  if (isTasksError) return <div>Error fetching tasks</div>;
+
+  if (isLoading || userId === null) return <div>Loading tasks...</div>;
 
   return (
     <div className="m-5 p-4">
@@ -130,9 +132,7 @@ const ReusablePriorityPage = ({ priority }: Props) => {
           Table
         </button>
       </div>
-      {isLoading ? (
-        <div>Loading tasks...</div>
-      ) : view === "list" ? (
+      {view === "list" ? (
         <div className="grid grid-cols-1 gap-4">
           {filteredTasks?.map((task: Task) => (
             <TaskCard key={task.id} task={task} />

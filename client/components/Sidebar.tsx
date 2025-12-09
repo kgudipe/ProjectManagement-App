@@ -33,11 +33,11 @@ const Sidebar = () => {
   if (!currentUser) return null;
   const currentUserDetails = currentUser?.userDetails;
 
-  const sidebarClassNmaes = `fixed flex flex-col h-100 justify-between shadow-xl transition-all duration-300 h-full z-40 dark:bg-black overflow-y-auto bg-white ${isSidebarCollapsed ? 'w-0 hidden' : 'w-64'}`;
+  const sidebarClassNmaes = `fixed flex flex-col h-100 justify-between shadow-xl transition-all duration-300 h-full z-40 dark:bg-black bg-white ${isSidebarCollapsed ? 'w-0 hidden' : 'w-64'}`;
 
   return (
     <div className={sidebarClassNmaes}>
-      <div className='flex h-100 w-full flex-col justify-start'>
+      <div className='flex h-100 w-full flex-1 flex-col justify-start overflow-y-auto'>
         <div className='z-50 flex min-h-14 w-64 items-center justify-between bg-white px-6 pt-3 dark:bg-black'>
           <div className='text-xl font-bold text-gray-800 dark:text-white'>
             LIST
@@ -108,7 +108,7 @@ const Sidebar = () => {
           </>
         )}
       </div>
-      <div className="z-10 mt-32 flex w-full flex-col items-center gap-4 bg-white px-8 py-4 dark:bg-black md:hidden">
+      <div className="z-10 flex w-full flex-col items-center gap-4 bg-white px-8 py-4 dark:bg-black md:hidden">
         <div className="flex w-full items-center">
           <div className="align-center flex h-9 w-9 justify-center">
             {!!currentUserDetails?.profilePictureUrl ? (
