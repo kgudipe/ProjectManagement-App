@@ -1,70 +1,54 @@
-import type{ Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from '@prisma/adapter-pg';
-import * as dotenv from "dotenv";
-dotenv.config();
+import type { Request, Response } from "express";
+import { prisma } from "../lib/prisma.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
+import { notFoundError } from "../lib/httpError.js";
 
-const adapter = new PrismaPg({ 
-  connectionString: process.env.DATABASE_URL 
+export const getUsers = asyncHandler(async (_req: Request, res: Response) => {
+  const users = await prisma.user.findMany();
+  res.json(users);
 });
-const prisma = new PrismaClient({ adapter });
 
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
-  
-  try {
-    const users = await prisma.user.findMany();
-    res.json(users);
-  } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: `Error retrieving users: ${error.message}` });
-  }
-};
-
-export const getUser = async (req: Request, res: Response): Promise<void> => {
+export const getUser = asyncHandler(async (req: Request, res: Response) => {
   const { cognitoId } = req.params;
+  const user = await prisma.user.findUnique({
+    where: { cognitoId: cognitoId! },
+    include: { team: true },
+  });
 
-  if (!cognitoId) {
-    res.status(400).json({ message: "cognitoId path parameter is required" });
-    return;
-  }
-  
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        cognitoId: cognitoId,
-      },
-    });
+  if (!user) throw notFoundError("User");
+  res.json(user);
+});
 
-    res.json(user);
-  } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: `Error retrieving user: ${error.message}` });
-  }
-};
+export const postUser = asyncHandler(async (req: Request, res: Response) => {
+  const { username, cognitoId, profilePictureUrl = "i1.jpg", teamId } = req.body;
 
-export const postUser = async (req: Request, res: Response) => {
-  try {
-    const {
+  const newUser = await prisma.user.create({
+    data: {
       username,
       cognitoId,
-      profilePictureUrl = "i1.jpg",
-      teamId = 1,
-    } = req.body;
-    const newUser = await prisma.user.create({
-      data: {
-        username,
-        cognitoId,
-        profilePictureUrl,
-        teamId,
-      },
-    });
-    res.json({ message: "User Created Successfully", newUser });
-  } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: `Error retrieving users: ${error.message}` });
-  }
-};
+      profilePictureUrl,
+      ...(teamId !== undefined ? { teamId } : {}),
+    },
+  });
 
+  res.status(201).json({ message: "User created successfully", user: newUser });
+});
+
+export const updateUser = asyncHandler(async (req: Request, res: Response) => {
+  const { cognitoId } = req.params;
+  const { username, profilePictureUrl, teamId } = req.body;
+
+  const existing = await prisma.user.findUnique({ where: { cognitoId: cognitoId! } });
+  if (!existing) throw notFoundError("User");
+
+  const updated = await prisma.user.update({
+    where: { cognitoId: cognitoId! },
+    data: {
+      ...(username !== undefined ? { username } : {}),
+      ...(profilePictureUrl !== undefined ? { profilePictureUrl } : {}),
+      ...(teamId !== undefined ? { teamId } : {}),
+    },
+  });
+
+  res.json(updated);
+});

@@ -1,47 +1,31 @@
-import type{ Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from '@prisma/adapter-pg';
-import * as dotenv from "dotenv";
-dotenv.config();
+import type { Request, Response } from "express";
+import { prisma } from "../lib/prisma.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
 
-const adapter = new PrismaPg({ 
-  connectionString: process.env.DATABASE_URL 
+export const search = asyncHandler(async (req: Request, res: Response) => {
+  const query = (req.query.query as string) ?? "";
+
+  const [tasks, projects, users] = await Promise.all([
+    prisma.task.findMany({
+      where: {
+        OR: [
+          { title: { contains: query, mode: "insensitive" } },
+          { description: { contains: query, mode: "insensitive" } },
+        ],
+      },
+    }),
+    prisma.project.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { description: { contains: query, mode: "insensitive" } },
+        ],
+      },
+    }),
+    prisma.user.findMany({
+      where: { username: { contains: query, mode: "insensitive" } },
+    }),
+  ]);
+
+  res.json({ tasks, projects, users });
 });
-const prisma = new PrismaClient({ adapter });
-
-export const search = async (req: Request, res: Response): Promise<void> => {
-  const { query } = req.query;
-  try {
-    const tasks= await prisma.task.findMany({
-        where:{
-            OR:[
-                {title: {contains: query as string}},
-                {description: {contains: query as string}},
-            ]
-        }
-    })
-
-    const projects= await prisma.project.findMany({
-        where:{
-            OR:[
-                {name: {contains: query as string}},
-                {description: {contains: query as string}},
-            ]
-        }
-    })
-
-    const users= await prisma.user.findMany({
-        where:{
-            OR:[
-                {username: {contains: query as string}},
-            ]
-        }
-    })
-
-    res.json({tasks,projects,users})
-  } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: `Error performing search: ${error.message}` });
-  }
-};
