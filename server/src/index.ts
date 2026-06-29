@@ -13,6 +13,7 @@ import teamRoutes from "./routes/teamRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import attachmentRoutes from "./routes/attachmentRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
+import { requireAuth } from "./middleware/auth.js";
 
 /* Configuration */
 dotenv.config();
@@ -35,14 +36,14 @@ app.get("/", (_req, res) => {
   res.send("Project Management API");
 });
 
-/* Routes */
-app.use("/projects", projectRoutes);
-app.use("/tasks", taskRoutes);
-app.use("/search", searchRoutes);
-app.use("/users", userRoutes);
-app.use("/teams", teamRoutes);
-app.use("/comments", commentRoutes);
-app.use("/attachments", attachmentRoutes);
+/* Routes (protected by Cognito JWT when AUTH_ENABLED=true) */
+app.use("/projects", requireAuth, projectRoutes);
+app.use("/tasks", requireAuth, taskRoutes);
+app.use("/search", requireAuth, searchRoutes);
+app.use("/users", requireAuth, userRoutes);
+app.use("/teams", requireAuth, teamRoutes);
+app.use("/comments", requireAuth, commentRoutes);
+app.use("/attachments", requireAuth, attachmentRoutes);
 
 /* 404 + central error handling (must be registered last) */
 app.use(notFound);
