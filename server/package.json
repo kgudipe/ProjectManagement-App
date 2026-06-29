@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node --test --experimental-strip-types",
+    "test": "node --test --experimental-strip-types \"test/**/*.test.ts\"",
     "typecheck": "tsc --noEmit",
     "build": "rimraf dist && npx tsc",
     "start": "node dist/src/index.js",
