@@ -1,0 +1,16 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+
+aws_region  = "us-east-1"
+environment = "dev"
+
+# Required: database master password (8+ chars).
+db_password = "change-me-to-a-strong-password"
+
+# Recommended: lock SSH to your own IP (or leave empty key_pair_name to skip SSH
+# entirely and use SSM Session Manager).
+ssh_ingress_cidr = "0.0.0.0/0"
+key_pair_name    = ""
+
+# Optional: enable Amplify hosting for the frontend by connecting the GitHub repo.
+github_repository   = "https://github.com/kgudipe/ProjectManagement-App"
+github_access_token = "" # GitHub PAT with repo scope; leave empty to skip Amplify
