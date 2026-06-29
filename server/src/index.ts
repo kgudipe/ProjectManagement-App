@@ -10,6 +10,7 @@ import taskRoutes from "./routes/taskRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 /* Configuration */
@@ -39,6 +40,7 @@ app.use("/tasks", taskRoutes);
 app.use("/search", searchRoutes);
 app.use("/users", userRoutes);
 app.use("/teams", teamRoutes);
+app.use("/comments", commentRoutes);
 
 /* 404 + central error handling (must be registered last) */
 app.use(notFound);
