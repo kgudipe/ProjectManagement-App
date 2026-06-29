@@ -44,6 +44,21 @@ export interface Attachment {
   fileURL: string;
   uploadedById: number;
   taskId: number;
+  uploadedBy?: Pick<User, "userId" | "username">;
+}
+
+export interface Comment {
+  id: number;
+  text: string;
+  taskId: number;
+  userId: number;
+  user?: User;
+}
+
+export interface PresignedUpload {
+  uploadUrl: string;
+  key: string;
+  fileUrl: string;
 }
 
 export interface Task {
@@ -93,7 +108,7 @@ export const api = createApi({
    }),
 
   reducerPath: "api",
-  tagTypes:["Projects","Tasks", "Users", "Teams"],
+  tagTypes: ["Projects", "Tasks", "Users", "Teams", "Comments", "Attachments"],
   endpoints: (build) => ({
     getAuthUser: build.query({
       queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
@@ -117,6 +132,10 @@ export const api = createApi({
       query: () => 'projects',
       providesTags: ['Projects'],
     }),
+    getProject: build.query<Project, number>({
+      query: (id) => `projects/${id}`,
+      providesTags: (result, error, id) => [{ type: "Projects", id }],
+    }),
     createProject: build.mutation<Project, Partial<Project>>({
       query: (project) => ({
         url: 'projects',
@@ -124,6 +143,21 @@ export const api = createApi({
         body: project
       }),
       invalidatesTags: ['Projects'],
+    }),
+    updateProject: build.mutation<Project, { id: number } & Partial<Project>>({
+      query: ({ id, ...patch }) => ({
+        url: `projects/${id}`,
+        method: "PATCH",
+        body: patch,
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: "Projects", id }, "Projects"],
+    }),
+    deleteProject: build.mutation<void, number>({
+      query: (id) => ({
+        url: `projects/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Projects", "Tasks"],
     }),
     getTasks: build.query<Task[], {projectId:number}>({ 
       query: ({projectId}) => `tasks?projectId=${projectId}`,
@@ -155,13 +189,99 @@ export const api = createApi({
       }),
       invalidatesTags: (result,error,{taskId})=>[{type:'Tasks', id: taskId},],
     }),
+    updateTask: build.mutation<Task, { taskId: number } & Partial<Task>>({
+      query: ({ taskId, ...patch }) => ({
+        url: `tasks/${taskId}`,
+        method: "PATCH",
+        body: patch,
+      }),
+      invalidatesTags: (result, error, { taskId }) => [{ type: "Tasks", id: taskId }],
+    }),
+    deleteTask: build.mutation<void, number>({
+      query: (taskId) => ({
+        url: `tasks/${taskId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Tasks"],
+    }),
+    getComments: build.query<Comment[], number>({
+      query: (taskId) => `comments?taskId=${taskId}`,
+      providesTags: (result, error, taskId) => [{ type: "Comments", id: taskId }],
+    }),
+    createComment: build.mutation<Comment, { text: string; taskId: number; userId: number }>({
+      query: (body) => ({ url: "comments", method: "POST", body }),
+      invalidatesTags: (result, error, { taskId }) => [
+        { type: "Comments", id: taskId },
+        { type: "Tasks", id: taskId },
+      ],
+    }),
+    updateComment: build.mutation<Comment, { id: number; taskId: number; text: string }>({
+      query: ({ id, text }) => ({ url: `comments/${id}`, method: "PATCH", body: { text } }),
+      invalidatesTags: (result, error, { taskId }) => [{ type: "Comments", id: taskId }],
+    }),
+    deleteComment: build.mutation<void, { id: number; taskId: number }>({
+      query: ({ id }) => ({ url: `comments/${id}`, method: "DELETE" }),
+      invalidatesTags: (result, error, { taskId }) => [
+        { type: "Comments", id: taskId },
+        { type: "Tasks", id: taskId },
+      ],
+    }),
+    getAttachments: build.query<Attachment[], number>({
+      query: (taskId) => `attachments?taskId=${taskId}`,
+      providesTags: (result, error, taskId) => [{ type: "Attachments", id: taskId }],
+    }),
+    presignAttachment: build.mutation<
+      PresignedUpload,
+      { fileName: string; contentType: string; taskId: number }
+    >({
+      query: (body) => ({ url: "attachments/presign", method: "POST", body }),
+    }),
+    createAttachment: build.mutation<
+      Attachment,
+      { fileURL: string; fileName?: string; taskId: number; uploadedById: number }
+    >({
+      query: (body) => ({ url: "attachments", method: "POST", body }),
+      invalidatesTags: (result, error, { taskId }) => [
+        { type: "Attachments", id: taskId },
+        { type: "Tasks", id: taskId },
+      ],
+    }),
+    deleteAttachment: build.mutation<void, { id: number; taskId: number }>({
+      query: ({ id }) => ({ url: `attachments/${id}`, method: "DELETE" }),
+      invalidatesTags: (result, error, { taskId }) => [
+        { type: "Attachments", id: taskId },
+        { type: "Tasks", id: taskId },
+      ],
+    }),
     getUsers: build.query<User[], void>({
       query: () => "users",
       providesTags: ["Users"],
     }),
+    updateUser: build.mutation<
+      User,
+      { cognitoId: string; username?: string; profilePictureUrl?: string; teamId?: number }
+    >({
+      query: ({ cognitoId, ...patch }) => ({
+        url: `users/${cognitoId}`,
+        method: "PATCH",
+        body: patch,
+      }),
+      invalidatesTags: ["Users"],
+    }),
     getTeams: build.query<Team[], void>({
       query: () => "teams",
       providesTags: ["Teams"],
+    }),
+    createTeam: build.mutation<
+      Team,
+      { teamName: string; productOwnerUserId?: number; projectManagerUserId?: number }
+    >({
+      query: (body) => ({ url: "teams", method: "POST", body }),
+      invalidatesTags: ["Teams"],
+    }),
+    assignTeamToProject: build.mutation<unknown, { teamId: number; projectId: number }>({
+      query: (body) => ({ url: "teams/assign", method: "POST", body }),
+      invalidatesTags: ["Teams", "Projects"],
     }),
     search: build.query<SearchResults, string>({
       query: (query) => `search?query=${query}`
@@ -171,13 +291,29 @@ export const api = createApi({
 
 export const {
   useGetProjectsQuery,
+  useGetProjectQuery,
   useCreateProjectMutation,
+  useUpdateProjectMutation,
+  useDeleteProjectMutation,
   useGetTasksQuery,
   useCreateTaskMutation,
+  useUpdateTaskMutation,
   useUpdateTaskStatusMutation,
+  useDeleteTaskMutation,
+  useGetCommentsQuery,
+  useCreateCommentMutation,
+  useUpdateCommentMutation,
+  useDeleteCommentMutation,
+  useGetAttachmentsQuery,
+  usePresignAttachmentMutation,
+  useCreateAttachmentMutation,
+  useDeleteAttachmentMutation,
   useSearchQuery,
   useGetUsersQuery,
+  useUpdateUserMutation,
   useGetTeamsQuery,
+  useCreateTeamMutation,
+  useAssignTeamToProjectMutation,
   useGetTasksByUserQuery,
   useGetAuthUserQuery
 } = api;

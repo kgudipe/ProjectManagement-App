@@ -1,9 +1,9 @@
-import { useGetTasksQuery, useUpdateTaskStatusMutation } from '@/state/api';
+import { useDeleteTaskMutation, useGetTasksQuery, useUpdateTaskStatusMutation } from '@/state/api';
 import React from 'react'
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Task as TaskType } from '@/state/api';
-import { EllipsisVertical, MessageSquareMore, Plus } from 'lucide-react';
+import { EllipsisVertical, MessageSquareMore, Plus, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from "next/image";
 
@@ -113,6 +113,7 @@ type TaskProps = {
 };
 
 const Task = ({ task }: TaskProps) => {
+    const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
     const [{ isDragging }, drag] = useDrag(() => ({
         type: 'task',
         item: { id: task.id },
@@ -120,6 +121,12 @@ const Task = ({ task }: TaskProps) => {
             isDragging: !!monitor.isDragging(),
         })
     }))
+
+    const handleDelete = () => {
+        if (window.confirm(`Delete task "${task.title}"? This cannot be undone.`)) {
+            deleteTask(task.id);
+        }
+    };
 
     const taskTagsSplit = task.tags ? task.tags.split(',') : [];
 
@@ -164,8 +171,12 @@ const Task = ({ task }: TaskProps) => {
                             ))}
                         </div>
                     </div>
-                    <button className='flex h-6 w-4 shrink-0 items-center justify-center dark:text-neutral-500'>
-                        <EllipsisVertical size={26} />
+                    <button
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                        title="Delete task"
+                        className='flex h-6 w-5 shrink-0 items-center justify-center text-gray-400 hover:text-red-600 disabled:opacity-50 dark:text-neutral-500'>
+                        <Trash2 size={20} />
                     </button>
                 </div>
                 <div className='my-3 flex justify-between'>
