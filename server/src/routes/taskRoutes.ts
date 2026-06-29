@@ -1,14 +1,37 @@
 import { Router } from "express";
-import { getTasks, createTask, updateTaskStatus, getUserTasks } from "../controllers/taskController.js";
+import {
+  createTask,
+  deleteTask,
+  getTasks,
+  getUserTasks,
+  updateTask,
+  updateTaskStatus,
+} from "../controllers/taskController.js";
+import { validate } from "../middleware/validate.js";
+import {
+  createTaskSchema,
+  projectIdQuerySchema,
+  taskIdParamSchema,
+  updateStatusSchema,
+  updateTaskSchema,
+  userIdParamSchema,
+} from "../schemas/taskSchemas.js";
 
 const router = Router();
 
-router.get("/", getTasks);
-
-router.post("/", createTask);
-
-router.patch("/:taskId/status", updateTaskStatus);
-
-router.get("/user/:userId", getUserTasks)
+router.get("/", validate({ query: projectIdQuerySchema }), getTasks);
+router.post("/", validate({ body: createTaskSchema }), createTask);
+router.get("/user/:userId", validate({ params: userIdParamSchema }), getUserTasks);
+router.patch(
+  "/:taskId/status",
+  validate({ params: taskIdParamSchema, body: updateStatusSchema }),
+  updateTaskStatus
+);
+router.patch(
+  "/:taskId",
+  validate({ params: taskIdParamSchema, body: updateTaskSchema }),
+  updateTask
+);
+router.delete("/:taskId", validate({ params: taskIdParamSchema }), deleteTask);
 
 export default router;
