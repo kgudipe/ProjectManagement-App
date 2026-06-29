@@ -11,6 +11,7 @@ import searchRoutes from "./routes/searchRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
+import attachmentRoutes from "./routes/attachmentRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 /* Configuration */
@@ -41,6 +42,7 @@ app.use("/search", searchRoutes);
 app.use("/users", userRoutes);
 app.use("/teams", teamRoutes);
 app.use("/comments", commentRoutes);
+app.use("/attachments", attachmentRoutes);
 
 /* 404 + central error handling (must be registered last) */
 app.use(notFound);
