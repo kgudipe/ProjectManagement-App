@@ -1,0 +1,21 @@
+# Render Blueprint for the Express API (free tier).
+# In Render: New > Blueprint > connect this repo. It reads this file.
+# You only need to set DATABASE_URL (from Neon) when prompted.
+services:
+  - type: web
+    name: project-management-api
+    runtime: node
+    plan: free
+    rootDir: server
+    # --include=dev so TypeScript/Prisma (devDependencies) are available to build.
+    buildCommand: npm install --include=dev && npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && node dist/src/index.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        sync: false # set this to your Neon connection string in the dashboard
+      - key: NODE_ENV
+        value: production
+      - key: AUTH_ENABLED
+        value: "false" # flip to "true" after wiring Cognito env vars
