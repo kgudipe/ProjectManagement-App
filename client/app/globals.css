@@ -172,20 +172,169 @@ body {
 
 [data-amplify-authenticator] {
   --amplify-colors-background-primary: transparent;
-  --amplify-components-authenticator-router-background-color: rgba(255, 255, 255, 0.9);
-  --amplify-components-authenticator-router-border-color: #e5e7eb;
-  --amplify-components-authenticator-router-box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+  --amplify-components-authenticator-router-background-color: transparent;
+  --amplify-components-authenticator-router-border-color: transparent;
+  --amplify-components-authenticator-router-box-shadow: none;
   --amplify-components-button-primary-background-color: #0275ff;
   --amplify-components-button-primary-hover-background-color: #2563eb;
+  --amplify-components-fieldcontrol-border-color: #d1d5db;
+  --amplify-components-fieldcontrol-focus-border-color: #0275ff;
+  --amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 3px rgba(2, 117, 255, 0.16);
+  --amplify-space-xl: 1.25rem;
   --amplify-radii-medium: 0.5rem;
+  width: 100%;
+}
+
+[data-amplify-authenticator] [data-amplify-router] {
+  width: 100%;
+  border: 0;
+}
+
+[data-amplify-authenticator] [data-amplify-form] {
+  padding: 1.5rem 2rem 2rem;
+}
+
+.auth-visual {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(20, 184, 166, 0.36), transparent 28%),
+    radial-gradient(circle at 80% 15%, rgba(2, 117, 255, 0.38), transparent 26%),
+    linear-gradient(135deg, #172033 0%, #0f172a 58%, #111827 100%);
+}
+
+.auth-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent 90%);
 }
 
 .dark [data-amplify-authenticator] {
-  --amplify-components-authenticator-router-background-color: rgba(29, 31, 33, 0.94);
-  --amplify-components-authenticator-router-border-color: #2d3135;
+  --amplify-components-authenticator-router-background-color: transparent;
+  --amplify-components-authenticator-router-border-color: transparent;
   --amplify-colors-font-primary: #f9fafb;
   --amplify-colors-font-secondary: #d1d5db;
   --amplify-colors-background-secondary: #101214;
   --amplify-components-fieldcontrol-background-color: #1d1f21;
   --amplify-components-fieldcontrol-border-color: #2d3135;
+}
+
+/* -------- reactbits-inspired animated login (Aurora, GradientText, ShinyText) -------- */
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aurora__blob {
+  position: absolute;
+  width: 40rem;
+  height: 40rem;
+  border-radius: 9999px;
+  filter: blur(72px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.aurora__blob--1 {
+  top: -12rem;
+  left: -8rem;
+  background: radial-gradient(circle at 30% 30%, #14b8a6, transparent 62%);
+  animation: aurora-drift-1 18s ease-in-out infinite alternate;
+}
+
+.aurora__blob--2 {
+  top: 18%;
+  right: -12rem;
+  background: radial-gradient(circle at 50% 50%, #0275ff, transparent 62%);
+  animation: aurora-drift-2 22s ease-in-out infinite alternate;
+}
+
+.aurora__blob--3 {
+  bottom: -14rem;
+  left: 22%;
+  background: radial-gradient(circle at 50% 50%, #7c3aed, transparent 62%);
+  animation: aurora-drift-3 26s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-drift-1 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(6rem, 4rem, 0) scale(1.18); }
+}
+
+@keyframes aurora-drift-2 {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to { transform: translate3d(-5rem, 3rem, 0) scale(0.92); }
+}
+
+@keyframes aurora-drift-3 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-4rem, -5rem, 0) scale(1.22); }
+}
+
+.text-animated-gradient {
+  background-image: linear-gradient(100deg, #ffffff 0%, #7dd3fc 25%, #5eead4 50%, #93c5fd 75%, #ffffff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 6s linear infinite;
+}
+
+@keyframes gradient-pan {
+  to { background-position: 200% center; }
+}
+
+.shiny-text {
+  background: linear-gradient(110deg, rgba(219, 234, 254, 0.55) 40%, #ffffff 50%, rgba(219, 234, 254, 0.55) 60%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: shiny-sweep 4.5s linear infinite;
+}
+
+@keyframes shiny-sweep {
+  to { background-position: -200% 0; }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-card-enter {
+  animation: auth-card-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes auth-card-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora__blob,
+  .text-animated-gradient,
+  .shiny-text,
+  .animate-fade-up,
+  .auth-card-enter {
+    animation: none !important;
+  }
+
+  .text-animated-gradient,
+  .shiny-text {
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+  }
 }
