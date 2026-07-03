@@ -49,18 +49,18 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: Props) => {
     }));
   };
 
-  if (isLoading) return <div>Loading</div>
+  if (isLoading) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading timeline...</div>
 
-  if (error) return <div>An error occured while fetching tasks</div>
+  if (error) return <div className="page-pad text-red-600 dark:text-red-300">An error occured while fetching tasks</div>
 
   return (
-    <div className="px-4 xl:px-6">
-      <div className="flex flex-wrap items-center justify-center justify-between gap-2 py-5">
-        <h1 className="me-2 text-lg font-bold dark:text-white">
+    <div className="px-4 pb-8 sm:px-6 lg:px-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 py-5">
+        <h1 className="me-2 text-lg font-bold text-gray-950 dark:text-white">
           Project Tasks Timeline
         </h1>
-        <div className="relative inline-block w-64">
-          <select className="focus:shadow-outline block w-full appearance-none rounded border border-gary-400 bg-white px-4 py-2 pr-8 leading-light shadow hover:border-gray-500 focus:outline-none dark:border-dark-secondary dark:bg-dark-secondary dark:text-white" name="" id="" value={displayOptions.viewMode} onChange={handleViewModeChange}>
+        <div className="relative inline-block w-full sm:w-64">
+          <select className="control-input appearance-none pr-8" name="" id="" value={displayOptions.viewMode} onChange={handleViewModeChange}>
             <option value={ViewMode.Day}>Day</option>
             <option value={ViewMode.Week}>Week</option>
             <option value={ViewMode.Month}>Month</option>
@@ -68,7 +68,7 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: Props) => {
         </div>
       </div>
 
-          <div className="overflow-hidden rounded-md bg-white shadow dark:bg-dark-secondary dark:text-white">
+          <div className="surface-card overflow-hidden">
             <div className="timeline">
               <Gantt 
                 tasks={ganttTasks}
@@ -80,7 +80,7 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: Props) => {
                 />
             </div>
             <div className="px-4 pb-5 pt-1">
-              <button className="flex item-center rounded bg-blue-primary px-3 py-2 text-white hover: bg-blue-600"
+              <button className="primary-button"
               onClick={()=>setIsModalNewTaskOpen(true)}>
                 Add New Task
               </button>

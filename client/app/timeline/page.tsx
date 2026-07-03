@@ -46,16 +46,16 @@ const Timeline = () => {
     }));
   };
 
-  if (isLoading) return <div>Loading</div>
+  if (isLoading) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading timeline...</div>
 
-  if (error || !projects) return <div>An error occured while fetching projects</div>
+  if (error || !projects) return <div className="page-pad text-red-600 dark:text-red-300">An error occured while fetching projects</div>
 
   return (
-    <div className="max-w-full p-8">
-      <header className="mb-4 flex items-center justify-between">
+    <div className="page-pad max-w-full">
+      <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <Header name="Projects Timeline"/>
-        <div className="relative inline-block w-64">
-          <select className="focus:shadow-outline block w-full appearance-none rounded border border-gary-400 bg-white px-4 py-2 pr-8 leading-light shadow hover:border-gray-500 focus:outline-none dark:border-dark-secondary dark:bg-dark-secondary dark:text-white" name="" id="" value={displayOptions.viewMode} onChange={handleViewModeChange}>
+        <div className="relative inline-block w-full sm:w-64">
+          <select className="control-input appearance-none pr-8" name="" id="" value={displayOptions.viewMode} onChange={handleViewModeChange}>
             <option value={ViewMode.Day}>Day</option>
             <option value={ViewMode.Week}>Week</option>
             <option value={ViewMode.Month}>Month</option>
@@ -63,7 +63,7 @@ const Timeline = () => {
         </div>
       </header>
 
-          <div className="overflow-hidden rounded-md bg-white shadow dark:bg-dark-secondary dark:text-white">
+          <div className="surface-card overflow-hidden">
             <div className="timeline">
               <Gantt 
                 tasks={ganttTasks}

@@ -14,13 +14,13 @@ const Modal = ({ children, isOpen, onClose, name }: Props) => {
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-50 flex h-full w-full items-center justify-center overflow-y-auto bg-black/40 p-4">
-      <div className="w-full max-w-2xl rounded-lg bg-white p-4 shadow-lg dark:bg-dark-secondary">
+    <div className="fixed inset-0 z-50 flex h-full w-full items-center justify-center overflow-y-auto bg-gray-950/55 p-4 backdrop-blur-sm">
+      <div className="surface-card w-full max-w-2xl p-5 shadow-2xl shadow-black/20">
         <Header
           name={name}
           buttonComponent={
             <button
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-primary text-white hover:bg-blue-600"
+              className="icon-button"
               onClick={onClose}
             >
               <X size={18} />

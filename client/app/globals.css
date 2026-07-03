@@ -22,6 +22,13 @@
 
   --color-blue-primary: #0275ff;
   --color-stroke-dark: #2d3135;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f7f8fb;
+  --color-surface-strong: #eef2f7;
+  --color-ink: #172033;
+  --color-ink-muted: #647084;
+  --color-accent-teal: #14b8a6;
+  --color-accent-amber: #f59e0b;
 
   --background-gradient-radial: radial-gradient(var(--tw-gradient-stops));
   --background-gradient-conic: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
@@ -41,8 +48,82 @@ body,
   height: 100%;
   width: 100%;
   @apply text-sm;
-  @apply bg-white;
-  @apply dark:bg-black;
+  @apply bg-surface-muted text-ink antialiased;
+  @apply dark:bg-dark-bg dark:text-gray-100;
+}
+
+body {
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen w-full bg-surface-muted text-ink transition-colors duration-300 dark:bg-dark-bg dark:text-gray-100;
+    background-image:
+      linear-gradient(to right, rgba(20, 184, 166, 0.07), transparent 28%),
+      linear-gradient(to bottom, rgba(245, 158, 11, 0.06), transparent 34%);
+  }
+
+  .dark .app-shell {
+    background-image:
+      linear-gradient(to right, rgba(20, 184, 166, 0.08), transparent 30%),
+      linear-gradient(to bottom, rgba(59, 130, 246, 0.08), transparent 38%);
+  }
+
+  .surface-card {
+    @apply rounded-lg border border-gray-200/80 bg-white/90 shadow-sm shadow-gray-200/60 backdrop-blur transition-all duration-300 dark:border-stroke-dark dark:bg-dark-secondary/90 dark:shadow-black/20;
+  }
+
+  .surface-card-hover {
+    @apply hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg hover:shadow-gray-200/80 dark:hover:border-dark-tertiary dark:hover:shadow-black/30;
+  }
+
+  .animated-surface {
+    @apply relative overflow-hidden;
+  }
+
+  .animated-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.34) 42%, transparent 58%);
+    transform: translateX(-120%);
+    animation: surface-sheen 8s ease-in-out infinite;
+  }
+
+  .dark .animated-surface::before {
+    background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.08) 42%, transparent 58%);
+  }
+
+  .page-pad {
+    @apply w-full px-4 py-5 sm:px-6 lg:px-8;
+  }
+
+  .control-input {
+    @apply w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-ink shadow-sm outline-none transition focus:border-blue-primary focus:ring-2 focus:ring-blue-primary/20 dark:border-stroke-dark dark:bg-dark-secondary dark:text-gray-100 dark:placeholder:text-gray-500;
+  }
+
+  .icon-button {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-100 hover:text-ink dark:text-gray-300 dark:hover:bg-dark-tertiary dark:hover:text-white;
+  }
+
+  .primary-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-blue-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-500/20 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .ghost-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-stroke-dark dark:bg-dark-secondary dark:text-gray-200 dark:hover:bg-dark-tertiary;
+  }
+}
+
+@keyframes surface-sheen {
+  0%, 62% {
+    transform: translateX(-120%);
+  }
+  76%, 100% {
+    transform: translateX(120%);
+  }
 }
 
 .timeline ._3_ygE {
@@ -87,4 +168,24 @@ body,
 ::-webkit-scrollbar {
   width: 0px;
   height: 0px;
+}
+
+[data-amplify-authenticator] {
+  --amplify-colors-background-primary: transparent;
+  --amplify-components-authenticator-router-background-color: rgba(255, 255, 255, 0.9);
+  --amplify-components-authenticator-router-border-color: #e5e7eb;
+  --amplify-components-authenticator-router-box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+  --amplify-components-button-primary-background-color: #0275ff;
+  --amplify-components-button-primary-hover-background-color: #2563eb;
+  --amplify-radii-medium: 0.5rem;
+}
+
+.dark [data-amplify-authenticator] {
+  --amplify-components-authenticator-router-background-color: rgba(29, 31, 33, 0.94);
+  --amplify-components-authenticator-router-border-color: #2d3135;
+  --amplify-colors-font-primary: #f9fafb;
+  --amplify-colors-font-secondary: #d1d5db;
+  --amplify-colors-background-secondary: #101214;
+  --amplify-components-fieldcontrol-background-color: #1d1f21;
+  --amplify-components-fieldcontrol-border-color: #2d3135;
 }

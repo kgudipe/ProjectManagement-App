@@ -47,13 +47,13 @@ const ModalNewTask = ({ isOpen, onClose, id=null}: Props) => {
   };
 
   const isFormValid = () => {
-    return title && authorUserId && !(id!==null || projectId);
+    return Boolean(title && authorUserId && (id !== null || projectId));
   };
 
-  const selectStyles="mb-4 block w-full rounded border border-gray-300 px-3 py-2 dark:border-dark-teritary dark:text-white dark:focus:outline-none"
+  const selectStyles="control-input mb-4"
 
   const inputStyles =
-    "w-full rounded border border-gray-300 p-2 shadow-sm dark:border-dark-tertiary dark:bg-dark-tertiary dark:text-white dark:focus:outline-none";
+    "control-input";
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} name="Create New Task">
@@ -153,7 +153,7 @@ const ModalNewTask = ({ isOpen, onClose, id=null}: Props) => {
         )}
         <button
           type="submit"
-          className={`focus-offset-2 mt-4 flex w-full justify-center rounded-md border border-transparent bg-blue-primary px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+          className={`primary-button mt-4 w-full ${
             !isFormValid() || isLoading ? "cursor-not-allowed opacity-50" : ""
           }`}
           disabled={!isFormValid() || isLoading}

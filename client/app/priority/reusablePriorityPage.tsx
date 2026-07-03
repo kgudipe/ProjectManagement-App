@@ -93,12 +93,12 @@ const ReusablePriorityPage = ({ priority }: Props) => {
     (task: Task) => task.priority === priority,
   );
 
-  if (isTasksError) return <div>Error fetching tasks</div>;
+  if (isTasksError) return <div className="page-pad text-red-600 dark:text-red-300">Error fetching tasks</div>;
 
-  if (isLoading || userId === null) return <div>Loading tasks...</div>;
+  if (isLoading || userId === null) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading tasks...</div>;
 
   return (
-    <div className="m-5 p-4">
+    <div className="page-pad">
       <ModalNewTask
         isOpen={isModalNewTaskOpen}
         onClose={() => setIsModalNewTaskOpen(false)}
@@ -107,33 +107,33 @@ const ReusablePriorityPage = ({ priority }: Props) => {
         name="Priority Page"
         buttonComponent={
           <button
-            className="mr-3 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+            className="primary-button"
             onClick={() => setIsModalNewTaskOpen(true)}
           >
             Add Task
           </button>
         }
       />
-      <div className="mb-4 flex justify-start">
+      <div className="mb-4 inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-stroke-dark dark:bg-dark-secondary">
         <button
-          className={`px-4 py-2 ${
-            view === "list" ? "bg-gray-300" : "bg-white"
-          } rounded-l`}
+          className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+            view === "list" ? "bg-blue-primary text-white" : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-tertiary"
+          }`}
           onClick={() => setView("list")}
         >
           List
         </button>
         <button
-          className={`px-4 py-2 ${
-            view === "table" ? "bg-gray-300" : "bg-white"
-          } rounded-l`}
+          className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+            view === "table" ? "bg-blue-primary text-white" : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-tertiary"
+          }`}
           onClick={() => setView("table")}
         >
           Table
         </button>
       </div>
       {view === "list" ? (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {filteredTasks?.map((task: Task) => (
             <TaskCard key={task.id} task={task} />
           ))}
@@ -141,7 +141,7 @@ const ReusablePriorityPage = ({ priority }: Props) => {
       ) : (
         view === "table" &&
         filteredTasks && (
-          <div className="z-0 w-full">
+          <div className="z-0 h-[620px] w-full">
             <DataGrid
               rows={filteredTasks}
               columns={columns}

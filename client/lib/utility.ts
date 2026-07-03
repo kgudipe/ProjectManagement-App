@@ -1,15 +1,18 @@
-export const dataGridClassNames= "border border-gray-200 bg-white shadow dark:border-stroke-dark dark:bg-dark-secondary dark:text-gray-200";
+export const dataGridClassNames= "surface-card overflow-hidden border-none shadow-none";
 
 export const dataGridSxStyles = (isDarkMode: boolean) => {
   return {
+    border: "none",
+    color: isDarkMode ? "#e5e7eb" : "#172033",
+    backgroundColor: "transparent",
     "& .MuiDataGrid-columnHeaders": {
-      color: `${isDarkMode ? "#e5e7eb" : ""}`,
+      color: `${isDarkMode ? "#e5e7eb" : "#374151"}`,
       '& [role="row"] > *': {
-        backgroundColor: `${isDarkMode ? "#1d1f21" : "white"}`,
-        borderColor: `${isDarkMode ? "#2d3135" : ""}`,
+        backgroundColor: `${isDarkMode ? "#1d1f21" : "#f7f8fb"}`,
+        borderColor: `${isDarkMode ? "#2d3135" : "#e5e7eb"}`,
       },
     },
-    "& .MuiIconbutton-root": {
+    "& .MuiIconButton-root": {
       color: `${isDarkMode ? "#a3a3a3" : ""}`,
     },
     "& .MuiTablePagination-root": {
@@ -19,13 +22,23 @@ export const dataGridSxStyles = (isDarkMode: boolean) => {
       color: `${isDarkMode ? "#a3a3a3" : ""}`,
     },
     "& .MuiDataGrid-cell": {
-      border: "none",
+      borderColor: `${isDarkMode ? "#2d3135" : "#eef2f7"}`,
     },
     "& .MuiDataGrid-row": {
-      borderBottom: `1px solid ${isDarkMode ? "#2d3135" : "e5e7eb"}`,
+      borderBottom: `1px solid ${isDarkMode ? "#2d3135" : "#e5e7eb"}`,
+      "&:hover": {
+        backgroundColor: isDarkMode ? "rgba(59, 61, 64, 0.55)" : "#f8fafc",
+      },
     },
     "& .MuiDataGrid-withBorderColor": {
-      borderColor: `${isDarkMode ? "#2d3135" : "e5e7eb"}`,
+      borderColor: `${isDarkMode ? "#2d3135" : "#e5e7eb"}`,
+    },
+    "& .MuiDataGrid-footerContainer": {
+      borderColor: `${isDarkMode ? "#2d3135" : "#e5e7eb"}`,
+    },
+    "& .MuiDataGrid-toolbarContainer": {
+      padding: "12px",
+      borderBottom: `1px solid ${isDarkMode ? "#2d3135" : "#e5e7eb"}`,
     },
   };
 };

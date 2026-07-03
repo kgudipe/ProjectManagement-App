@@ -24,11 +24,11 @@ const Teams = () => {
   const { data: teams, isLoading, isError } = useGetTeamsQuery();
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError || !teams) return <div>Error fetching teams</div>;
+  if (isLoading) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading teams...</div>;
+  if (isError || !teams) return <div className="page-pad text-red-600 dark:text-red-300">Error fetching teams</div>;
 
   return (
-    <div className="flex w-full flex-col p-8">
+    <div className="page-pad flex w-full flex-col">
       <Header name="Teams" />
       <div style={{ height: 650, width: "100%" }}>
         <DataGrid

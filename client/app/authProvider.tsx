@@ -46,16 +46,19 @@ const formFields = {
 };
 
 
-const AuthProvider=({children}:any)=>{
+const AuthProvider=({children}: { children: React.ReactNode })=>{
     return(
-        <div>
+        <div className="min-h-screen">
       <Authenticator formFields={formFields}>
-        {({ user }: any) =>
+        {({ user }: { user?: unknown }) =>
           user ? (
             <div>{children}</div>
           ) : (
-            <div>
-              <h1>Please sign in below:</h1>
+            <div className="flex min-h-screen items-center justify-center bg-surface-muted p-6 text-gray-950 dark:bg-dark-bg dark:text-white">
+              <div className="surface-card animated-surface max-w-md p-6 text-center">
+                <h1 className="text-2xl font-bold tracking-tight">Sign in to LIST</h1>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Access your projects, tasks, teams, and timelines.</p>
+              </div>
             </div>
           )
         }

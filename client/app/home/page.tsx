@@ -46,8 +46,8 @@ const HomePage = () => {
 
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
-  if (tasksLoading || isProjectsLoading) return <div>Loading..</div>;
-  if (tasksError || !tasks || !projects) return <div>Error fetching data</div>;
+  if (tasksLoading || isProjectsLoading) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading dashboard...</div>;
+  if (tasksError || !tasks || !projects) return <div className="page-pad text-red-600 dark:text-red-300">Error fetching data</div>;
 
   const priorityCount = tasks.reduce(
     (acc: Record<string, number>, task: Task) => {
@@ -79,24 +79,24 @@ const HomePage = () => {
 
   const chartColors = isDarkMode
     ? {
-        bar: "#8884d8",
-        barGrid: "#303030",
-        pieFill: "#4A90E2",
+        bar: "#60a5fa",
+        barGrid: "#2d3135",
+        pieFill: "#14b8a6",
         text: "#FFFFFF",
       }
     : {
-        bar: "#8884d8",
-        barGrid: "#E0E0E0",
-        pieFill: "#82ca9d",
-        text: "#000000",
+        bar: "#0275ff",
+        barGrid: "#E5E7EB",
+        pieFill: "#14b8a6",
+        text: "#172033",
       };
 
   return (
-    <div className="container h-full w-full bg-gray-100 bg-transparent">
+    <div className="page-pad">
       <Header name="Project Management Dashboard" />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="rounded-lg bg-white p-4 shadow dark:bg-dark-secondary">
-          <h3 className="mb-4 text-lg font-semibold dark:text-white">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <div className="surface-card animated-surface p-4 sm:p-5">
+          <h3 className="mb-4 text-lg font-semibold text-gray-950 dark:text-white">
             Task Priority Distribution
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -111,6 +111,10 @@ const HomePage = () => {
                 contentStyle={{
                   width: "min-content",
                   height: "min-content",
+                  borderRadius: "10px",
+                  border: isDarkMode ? "1px solid #2d3135" : "1px solid #e5e7eb",
+                  background: isDarkMode ? "#1d1f21" : "#ffffff",
+                  color: chartColors.text,
                 }}
               />
               <Legend />
@@ -118,8 +122,8 @@ const HomePage = () => {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="rounded-lg bg-white p-4 shadow dark:bg-dark-secondary">
-          <h3 className="mb-4 text-lg font-semibold dark:text-white">
+        <div className="surface-card animated-surface p-4 sm:p-5">
+          <h3 className="mb-4 text-lg font-semibold text-gray-950 dark:text-white">
             Project Status
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -132,13 +136,20 @@ const HomePage = () => {
                   />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "10px",
+                  border: isDarkMode ? "1px solid #2d3135" : "1px solid #e5e7eb",
+                  background: isDarkMode ? "#1d1f21" : "#ffffff",
+                  color: chartColors.text,
+                }}
+              />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="rounded-lg bg-white p-4 shadow dark:bg-dark-secondary md:col-span-2">
-          <h3 className="mb-4 text-lg font-semibold dark:text-white">
+        <div className="surface-card p-4 sm:p-5 xl:col-span-2">
+          <h3 className="mb-4 text-lg font-semibold text-gray-950 dark:text-white">
             Your Tasks
           </h3>
           <div style={{ height: 400, width: "100%" }}>

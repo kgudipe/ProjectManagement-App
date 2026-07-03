@@ -14,6 +14,17 @@ type BoardProps = {
 
 const taskStatuses = ['To Do', 'Work In Progress', 'Under Review', 'Completed'];
 
+const PriorityTag = ({ priority }: { priority: TaskType['priority'] }) => (
+    <div className={`rounded-full px-2 py-1 text-xs font-semibold ${priority === 'Urgent' ? 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-200'
+            : priority === 'High' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-200'
+                : priority === 'Medium' ? 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-200'
+                    : priority === 'Low' ? 'bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-200'
+                        : 'bg-gray-100 text-gray-700 dark:bg-dark-tertiary dark:text-gray-200'
+        }`}>
+        {priority}
+    </div>
+);
+
 const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
     const {
         data: tasks,
@@ -26,12 +37,12 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
         updateTaskStatus({ taskId, status: toStatus });
     };
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>An error occurred while fetching tasks</div>;
+    if (isLoading) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading tasks...</div>;
+    if (error) return <div className="page-pad text-red-600 dark:text-red-300">An error occurred while fetching tasks</div>;
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 p-4 sm:p-6 lg:p-8 md:grid-cols-2 xl:grid-cols-4">
                 {taskStatuses.map((status) => (
                     <TaskColumn
                         key={status}
@@ -59,17 +70,17 @@ const TaskColumn = ({
     moveTask,
     setIsModalNewTaskOpen
 }: TaskColumnProps) => {
-    const [{ isOver }, drop] = useDrop(() => ({
+    const [{ isOver }, drop] = useDrop<{ id: number }, void, { isOver: boolean }>(() => ({
         accept: 'task',
         drop: (item: { id: number }) => moveTask(item.id, status),
-        collect: (monitor: any) => ({
+        collect: (monitor) => ({
             isOver: !!monitor.isOver()
         })
     }))
 
     const tasksCount = tasks.filter((task) => task.status === status).length;
 
-    const statusColor: any = {
+    const statusColor: Record<string, string> = {
         "To Do": "#2563EB",
         "Work In Progress": "#059669",
         "Under Review": "#D97706",
@@ -80,22 +91,22 @@ const TaskColumn = ({
         <div ref={(instance) => {
             drop(instance);
         }}
-            className={`sl:py-4 rounded-lg py-2 xl:px-2 ${isOver ? 'bg-blue-100 dark:bg-neutral-950' : ''}`}>
+            className={`rounded-lg py-2 transition ${isOver ? 'bg-blue-50/80 ring-2 ring-blue-primary/25 dark:bg-blue-primary/10' : ''}`}>
             <div className='mb-3 flex w-full'>
                 <div className={`w-2 !bg-[${statusColor[status]}] rounded-s-lg`} style={{ backgroundColor: statusColor[status] }} />
-                <div className='flex w-full items-center justify-between rounded-e-lg bg-white px-5 py-4 dark:bg-dark-secondary'>
-                    <h3 className=' flex items-center text-lg font-semibold dark:text-white'>
+                <div className='surface-card flex w-full items-center justify-between rounded-s-none px-4 py-3'>
+                    <h3 className='flex items-center text-base font-semibold text-gray-950 dark:text-white'>
                         {status}{" "}
 
-                        <span className='ml-2 inline-block rounded-full bg-gray-200 p-1 text-center text-sm leading-none dark:bg-dark-tertiary' style={{ width: "1.5rem", height: "1.5rem" }}>
+                        <span className='ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-xs text-gray-600 dark:bg-dark-tertiary dark:text-gray-300'>
                             {tasksCount}
                         </span>
                     </h3>
                     <div className='flex items-center gap-1'>
-                        <button className='flex h-6 w-5 items-center justify-center dark:text-neutral-500'>
-                            <EllipsisVertical size={26} />
+                        <button className='icon-button h-8 w-8'>
+                            <EllipsisVertical size={20} />
                         </button>
-                        <button className='flex h-6 w-6 items-center justify-center rounded bg-gray-200 dark:bg-dark-tertiary dark:text-white' onClick={() => { setIsModalNewTaskOpen(true) }}>
+                        <button className='icon-button h-8 w-8 bg-gray-100 dark:bg-dark-tertiary' onClick={() => { setIsModalNewTaskOpen(true) }}>
                             <Plus size={16} />
                         </button>
                     </div>
@@ -114,10 +125,10 @@ type TaskProps = {
 
 const Task = ({ task }: TaskProps) => {
     const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
-    const [{ isDragging }, drag] = useDrag(() => ({
+    const [{ isDragging }, drag] = useDrag<{ id: number }, void, { isDragging: boolean }>(() => ({
         type: 'task',
         item: { id: task.id },
-        collect: (monitor: any) => ({
+        collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         })
     }))
@@ -136,27 +147,16 @@ const Task = ({ task }: TaskProps) => {
 
     const numberOfComments = (task.comments && task.comments.length) || 0;
 
-    const PriorityTag = ({ priority }: { priority: TaskType['priority'] }) => (
-        <div className={`rounded-full px-2 py-1 text-xs font-semibold ${priority === 'Urgent' ? 'bg-red-200 text-red-700'
-                : priority === 'High' ? 'bg-yellow-200 text-yellow-700'
-                    : priority === 'Medium' ? 'bg-green-200 text-green-700'
-                        : priority === 'Low' ? 'bg-blue-100 text-blue-800'
-                            : 'bg-gray-200 text-gray-700'
-            }`}>
-            {priority}
-        </div>
-    );
-
     return (
         <div ref={(instance) => { drag(instance) }}
-            className={`mb-4 rounded-md bg-white shadow dark:bg-dark-secondary`}>
+            className={`surface-card surface-card-hover mb-4 ${isDragging ? 'opacity-50' : ''}`}>
             {task.attachments && task.attachments.length > 0 && (
                 <Image
                     src={`https://pm-images-s3bucket.s3.us-east-1.amazonaws.com/${task.attachments[0].fileURL}`}
                     alt={task.attachments[0].fileName}
                     width={400}
                     height={200}
-                    className="h-auto w-full rounded-tr-md"
+                    className="h-auto w-full rounded-t-lg object-cover"
                 />
             )}
             <div className='p-4 md:p-6'>
@@ -165,7 +165,7 @@ const Task = ({ task }: TaskProps) => {
                         {task.priority && <PriorityTag priority={task.priority} />}
                         <div className='flex gap-2'>
                             {taskTagsSplit.map((tag) => (
-                                <div key={tag} className='rounded-full bg-blue-100 px-2 py-1 text-xs'>
+                                <div key={tag} className='rounded-full bg-blue-50 px-2 py-1 text-xs text-blue-700 dark:bg-blue-primary/15 dark:text-blue-200'>
                                     {" "} {tag}
                                 </div>
                             ))}
@@ -175,14 +175,14 @@ const Task = ({ task }: TaskProps) => {
                         onClick={handleDelete}
                         disabled={isDeleting}
                         title="Delete task"
-                        className='flex h-6 w-5 shrink-0 items-center justify-center text-gray-400 hover:text-red-600 disabled:opacity-50 dark:text-neutral-500'>
+                        className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-red-500/10 dark:hover:text-red-300'>
                         <Trash2 size={20} />
                     </button>
                 </div>
                 <div className='my-3 flex justify-between'>
-                    <h4 className='text-md font-bold dark:text-white'>{task.title}</h4>
+                    <h4 className='text-md font-bold text-gray-950 dark:text-white'>{task.title}</h4>
                     {typeof task.points === "number" && (
-                        <div className='text-xs font-semibold dark:text-white'>
+                        <div className='rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 dark:bg-dark-tertiary dark:text-white'>
                             {task.points} pts
                         </div>
                     )}
@@ -191,7 +191,7 @@ const Task = ({ task }: TaskProps) => {
                     {formattedStartDate && <span>{formattedStartDate} - </span>}
                     {formattedDueDate && <span>{formattedDueDate}</span>}
                 </div>
-                <p className='text-sm text-gray-600 dark:text-neutral-500'>
+                <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
                     {task.description}
                 </p>
                 <div className='mt-4 border-t border-gray-200 dark:border-stroke-dark' />

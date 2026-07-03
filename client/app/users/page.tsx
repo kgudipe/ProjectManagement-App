@@ -4,7 +4,7 @@ import { useGetUsersQuery } from "@/state/api";
 import React from "react";
 import { useAppSelector } from "../redux";
 import Header from "@/components/Header";
-import { DataGrid, GridColDef, GridToolbar} from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Image from "next/image";
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utility";
 //import { GridToolbar } from "@mui/x-data-grid/internals";
@@ -42,12 +42,12 @@ const Users = () => {
     const { data: users, isLoading, error } = useGetUsersQuery();
     const isDarkmode = useAppSelector((state) => state.global.isDarkMode)
 
-    if (isLoading) return <div>Loading</div>
+    if (isLoading) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading users...</div>
 
-    if (error || !users) return <div>An error occured while fetching users</div>
+    if (error || !users) return <div className="page-pad text-red-600 dark:text-red-300">An error occured while fetching users</div>
 
     return (
-        <div className="flex w-full flex-col p-8">
+        <div className="page-pad flex w-full flex-col">
             <Header name="Users" />
             <div style={{ height: 650, width: "100%" }}>
                 <DataGrid

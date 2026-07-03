@@ -28,46 +28,44 @@ const Navbar = () => {
     const currentUserDetails = currentUser?.userDetails;
 
     return (
-        <div className="flex items-center justify-between bg-white px-4 py-3 dark:bg-black">
+        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-gray-200/80 bg-white/85 px-4 py-3 backdrop-blur-xl dark:border-stroke-dark dark:bg-dark-bg/85 sm:px-6 lg:px-8">
             {/* Search Bar */}
-            <div className='flex items-center gap-8'>
+            <div className='flex min-w-0 flex-1 items-center gap-3 sm:gap-5'>
                 {!isSidebarCollapsed ? null : (
-                    <button onClick={() => dispatch(setIsSidebarCollapsed(!isSidebarCollapsed))}>
-                        <Menu className='h-8 w-8 dark:text-white' />
+                    <button className="icon-button shrink-0" onClick={() => dispatch(setIsSidebarCollapsed(!isSidebarCollapsed))}>
+                        <Menu className='h-5 w-5' />
                     </button>
                 )}
-                <div className='relative flex h-min w-[200px]'>
-                    <Search className='absolute left-[4px] top-1/2 mr-2 h-5 w-5 -translate-y-1/2 transform' />
-                    <input type="search" placeholder='Search...' className='w-full rounded border-none bg-gray-100 p-2 pl-8 placeholder-gray-500 focus:border-transparent focus:outline-none dark:bg-gray-700 dark:text-white dark:placeholder-white' />
+                <div className='relative flex h-min w-full max-w-sm'>
+                    <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500' />
+                    <input type="search" placeholder='Search...' className='control-input pl-9' />
                 </div>
             </div>
 
             {/* Icons */}
-            <div className='flex items-center'>
+            <div className='flex shrink-0 items-center gap-1'>
                 <button
                     onClick={() => dispatch(setIsDarkMode(!isDarkMode))}
-                    className={isDarkMode ? `rounded p-2 dark:hover:bg-gray-700` : `rounded p-2 hover:bg-gray-100`}
+                    className="icon-button"
+                    aria-label="Toggle theme"
                 >
                     {isDarkMode ? (
-                        <Sun className='h-6 w-6 cursor-pointer dark:text-white' />
+                        <Sun className='h-5 w-5' />
                     ) : (
-                        <Moon className='h-6 w-6 cursor-pointer' />
+                        <Moon className='h-5 w-5' />
                     )}
                 </button>
                 <Link
                     href='/settings'
-                    className={
-                        isDarkMode
-                            ? `h-min w-min rounded p-2 dark:hover:bg-gray-700`
-                            : `h-min w-min rounded p-2 hover:bg-gray-100`
-                    }
+                    className="icon-button"
+                    aria-label="Settings"
                 >
-                    <Settings className='h-6 w-6 cursor-pointer dark:text-white' />
+                    <Settings className='h-5 w-5' />
                 </Link>
 
                 {/* Divider + user info (desktop) */}
                 <div className='ml-4 hidden items-center gap-3 md:flex'>
-                    <div className='h-8 w-px bg-gray-200 dark:bg-gray-700' />
+                    <div className='h-8 w-px bg-gray-200 dark:bg-stroke-dark' />
                     <div className='flex items-center gap-3'>
                         <div className="align-center flex h-9 w-9 justify-center">
                             {!!currentUserDetails?.profilePictureUrl ? (
@@ -76,17 +74,17 @@ const Navbar = () => {
                                     alt={currentUserDetails?.username || "User Profile Picture"}
                                     width={100}
                                     height={50}
-                                    className="h-full rounded-full object-cover"
-                                />
-                            ) : (
-                                <User className="h-6 w-6 cursor-pointer self-center rounded-full dark:text-white" />
+                                className="h-full rounded-full object-cover ring-2 ring-white dark:ring-dark-tertiary"
+                            />
+                        ) : (
+                                <User className="h-6 w-6 self-center rounded-full text-gray-600 dark:text-gray-200" />
                             )}
                         </div>
-                        <span className="text-gray-800 dark:text-white">
+                        <span className="max-w-32 truncate font-medium text-gray-800 dark:text-white">
                             {currentUserDetails?.username}
                         </span>
                         <button
-                            className="rounded bg-blue-400 px-4 py-2 text-xs font-bold text-white hover:bg-blue-500"
+                            className="ghost-button px-3 py-2 text-xs"
                             onClick={handleSignOut}
                         >
                             Sign out
