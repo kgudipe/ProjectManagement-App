@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react'
-import Image from 'next/image';
 import { AlertCircle, AlertOctagon, AlertTriangle, Briefcase, ChevronDown, ChevronUp, Home, Layers3, LockIcon, LucideIcon, Search, Settings, ShieldAlert, User, Users, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@/app/redux';
@@ -10,6 +9,7 @@ import Link from 'next/link';
 import { setIsSidebarCollapsed } from '@/state';
 import { useGetAuthUserQuery, useGetProjectsQuery } from "@/state/api";
 import { signOut } from "aws-amplify/auth";
+import SafeImage from './SafeImage';
 
 
 const Sidebar = () => {
@@ -53,7 +53,7 @@ const Sidebar = () => {
         </div>
         {/* TEAM */}
         <div className='mx-4 mb-3 flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50/80 px-4 py-4 dark:border-stroke-dark dark:bg-dark-secondary/80'>
-          <Image src="https://pm-images-s3bucket.s3.us-east-1.amazonaws.com/logo.png" alt="Logo" width={40} height={40} className="rounded-lg" />
+          <SafeImage src="/logo.png" alt="Logo" width={40} height={40} className="h-10 w-10 rounded-lg object-cover" />
           <div>
             <h3 className='text-sm font-bold tracking-wide text-gray-900 dark:text-gray-100'>TEAM NAME</h3>
             <div className='mt-1 flex items-start gap-2'>
@@ -111,17 +111,15 @@ const Sidebar = () => {
       <div className="z-10 flex w-full flex-col items-center gap-4 border-t border-gray-200 bg-white/80 px-6 py-4 dark:border-stroke-dark dark:bg-dark-bg/80 md:hidden">
         <div className="flex w-full items-center">
           <div className="align-center flex h-9 w-9 justify-center">
-            {!!currentUserDetails?.profilePictureUrl ? (
-              <Image
-                src={`https://pm-s3-images.s3.us-east-2.amazonaws.com/${currentUserDetails?.profilePictureUrl}`}
-                alt={currentUserDetails?.username || "User Profile Picture"}
-                width={100}
-                height={50}
-                className="h-full rounded-full object-cover ring-2 ring-white dark:ring-dark-tertiary"
-              />
-            ) : (
-              <User className="h-6 w-6 self-center rounded-full text-gray-700 dark:text-gray-100" />
-            )}
+            <SafeImage
+              src={currentUserDetails?.profilePictureUrl ? `/${currentUserDetails.profilePictureUrl}` : null}
+              alt={currentUserDetails?.username || "User Profile Picture"}
+              width={100}
+              height={50}
+              className="h-full rounded-full object-cover ring-2 ring-white dark:ring-dark-tertiary"
+              fallbackLabel={currentUserDetails?.username}
+              variant="avatar"
+            />
           </div>
           <span className="mx-3 text-gray-800 dark:text-white">
             {currentUserDetails?.username}

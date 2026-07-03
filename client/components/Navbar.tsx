@@ -1,12 +1,12 @@
 import React from 'react'
-import { Menu, Moon, Search, Settings, Sun, User } from 'lucide-react'
+import { Menu, Moon, Search, Settings, Sun } from 'lucide-react'
 import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 import { useAppSelector } from '@/app/redux'
 import { setIsDarkMode, setIsSidebarCollapsed } from '@/state'
 import { useGetAuthUserQuery } from "@/state/api";
 import { signOut } from "aws-amplify/auth";
-import Image from 'next/image'
+import SafeImage from './SafeImage'
 
 const Navbar = () => {
     const dispatch = useDispatch();
@@ -68,17 +68,15 @@ const Navbar = () => {
                     <div className='h-8 w-px bg-gray-200 dark:bg-stroke-dark' />
                     <div className='flex items-center gap-3'>
                         <div className="align-center flex h-9 w-9 justify-center">
-                            {!!currentUserDetails?.profilePictureUrl ? (
-                                <Image
-                                    src={`https://pm-images-s3bucket.s3.us-east-1.amazonaws.com/${currentUserDetails?.profilePictureUrl}`}
-                                    alt={currentUserDetails?.username || "User Profile Picture"}
-                                    width={100}
-                                    height={50}
+                            <SafeImage
+                                src={currentUserDetails?.profilePictureUrl ? `/${currentUserDetails.profilePictureUrl}` : null}
+                                alt={currentUserDetails?.username || "User Profile Picture"}
+                                width={100}
+                                height={50}
                                 className="h-full rounded-full object-cover ring-2 ring-white dark:ring-dark-tertiary"
+                                fallbackLabel={currentUserDetails?.username}
+                                variant="avatar"
                             />
-                        ) : (
-                                <User className="h-6 w-6 self-center rounded-full text-gray-600 dark:text-gray-200" />
-                            )}
                         </div>
                         <span className="max-w-32 truncate font-medium text-gray-800 dark:text-white">
                             {currentUserDetails?.username}

@@ -5,8 +5,8 @@ import React from "react";
 import { useAppSelector } from "../redux";
 import Header from "@/components/Header";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import Image from "next/image";
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utility";
+import SafeImage from "@/components/SafeImage";
 //import { GridToolbar } from "@mui/x-data-grid/internals";
 
 
@@ -25,12 +25,14 @@ const columns: GridColDef[] = [
         renderCell: (params) => (
             <div className="flex h-full w-full items-center justify-center">
                 <div className="h-9 w-9">
-                    <Image
-                        src={`https://pm-images-s3bucket.s3.us-east-1.amazonaws.com/${params.value}`}
+                    <SafeImage
+                        src={params.value ? `/${params.value}` : null}
                         alt={params.row.username}
                         width={100}
                         height={50}
                         className="h-full rounded-full object-cover"
+                        fallbackLabel={params.row.username}
+                        variant="avatar"
                     />
                 </div>
             </div>

@@ -7,9 +7,7 @@ import TaskCard from "@/components/TaskCard";
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utility";
 import {
   Priority,
-  Task,
-  useGetAuthUserQuery,
-  useGetTasksByUserQuery,
+  useGetTasksByPriorityQuery,
 } from "@/state/api";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React, { useState } from "react";
@@ -63,13 +61,13 @@ const columns: GridColDef[] = [
     field: "author",
     headerName: "Author",
     width: 150,
-    renderCell: (params) => params.value.username || "Unknown",
+    renderCell: (params) => params.value?.username || "Unknown",
   },
   {
     field: "assignee",
     headerName: "Assignee",
     width: 150,
-    renderCell: (params) => params.value.username || "Unassigned",
+    renderCell: (params) => params.value?.username || "Unassigned",
   },
 ];
 
@@ -77,25 +75,19 @@ const ReusablePriorityPage = ({ priority }: Props) => {
   const [view, setView] = useState("list");
   const [isModalNewTaskOpen, setIsModalNewTaskOpen] = useState(false);
 
-  const { data: currentUser } = useGetAuthUserQuery({});
-  const userId = currentUser?.userDetails?.userId ?? null;
   const {
     data: tasks,
     isLoading,
     isError: isTasksError,
-  } = useGetTasksByUserQuery(userId || 0, {
-    skip: userId === null,
-  });
+  } = useGetTasksByPriorityQuery(priority);
 
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
-  const filteredTasks = tasks?.filter(
-    (task: Task) => task.priority === priority,
-  );
+  const filteredTasks = tasks ?? [];
 
   if (isTasksError) return <div className="page-pad text-red-600 dark:text-red-300">Error fetching tasks</div>;
 
-  if (isLoading || userId === null) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading tasks...</div>;
+  if (isLoading) return <div className="page-pad text-gray-600 dark:text-gray-300">Loading tasks...</div>;
 
   return (
     <div className="page-pad">
@@ -134,13 +126,18 @@ const ReusablePriorityPage = ({ priority }: Props) => {
       </div>
       {view === "list" ? (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {filteredTasks?.map((task: Task) => (
+          {filteredTasks.length === 0 && (
+            <div className="surface-card p-5 text-gray-600 dark:text-gray-300">
+              No {priority.toLowerCase()} priority tasks found.
+            </div>
+          )}
+          {filteredTasks.map((task) => (
             <TaskCard key={task.id} task={task} />
           ))}
         </div>
       ) : (
         view === "table" &&
-        filteredTasks && (
+        (
           <div className="z-0 h-[620px] w-full">
             <DataGrid
               rows={filteredTasks}

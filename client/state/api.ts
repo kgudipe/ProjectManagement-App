@@ -117,8 +117,26 @@ export const api = createApi({
           const session = await fetchAuthSession();
           if (!session) throw new Error("No session found");
           const { userSub } = session;
-          const userDetailsResponse = await fetchWithBQ(`users/${userSub}`);
-          const userDetails = userDetailsResponse.data as User;
+          const usersResponse = await fetchWithBQ("users");
+          if (usersResponse.error) return { error: usersResponse.error };
+
+          const users = usersResponse.data as User[];
+          let userDetails = users.find((item) => item.cognitoId === userSub);
+
+          if (!userDetails) {
+            const createdUserResponse = await fetchWithBQ({
+              url: "users",
+              method: "POST",
+              body: {
+                username: user.username,
+                cognitoId: userSub,
+              },
+            });
+
+            if (createdUserResponse.error) return { error: createdUserResponse.error };
+
+            userDetails = (createdUserResponse.data as { user: User }).user;
+          }
 
           return { data: { user, userSub, userDetails } };
         } catch (error: unknown) {
@@ -178,6 +196,28 @@ export const api = createApi({
         result
           ? result.map(({id})=>({type:"Tasks", id}))
           : [{type: "Tasks", id:userId}]
+    }),
+    getTasksByPriority: build.query<Task[], Priority>({
+      queryFn: async (priority, _queryApi, _extraoptions, fetchWithBQ) => {
+        const projectsResponse = await fetchWithBQ("projects");
+        if (projectsResponse.error) return { error: projectsResponse.error };
+
+        const projects = projectsResponse.data as Project[];
+        const taskResponses = await Promise.all(
+          projects.map((project) => fetchWithBQ(`tasks?projectId=${project.id}`)),
+        );
+        const failedResponse = taskResponses.find((response) => response.error);
+        if (failedResponse?.error) return { error: failedResponse.error };
+
+        const tasks = taskResponses.flatMap((response) => response.data as Task[]);
+        return {
+          data: tasks.filter((task) => task.priority === priority),
+        };
+      },
+      providesTags: (result, error, priority) =>
+        result
+          ? result.map(({ id }) => ({ type: "Tasks" as const, id }))
+          : [{ type: "Tasks" as const, id: priority }],
     }),
     createTask: build.mutation<Task, Partial<Task>>({
       query: (task) => ({
@@ -321,5 +361,6 @@ export const {
   useCreateTeamMutation,
   useAssignTeamToProjectMutation,
   useGetTasksByUserQuery,
+  useGetTasksByPriorityQuery,
   useGetAuthUserQuery
 } = api;

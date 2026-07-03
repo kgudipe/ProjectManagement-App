@@ -5,7 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Task as TaskType } from '@/state/api';
 import { EllipsisVertical, MessageSquareMore, Plus, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
-import Image from "next/image";
+import SafeImage from '@/components/SafeImage';
 
 type BoardProps = {
     id: string;
@@ -151,12 +151,12 @@ const Task = ({ task }: TaskProps) => {
         <div ref={(instance) => { drag(instance) }}
             className={`surface-card surface-card-hover mb-4 ${isDragging ? 'opacity-50' : ''}`}>
             {task.attachments && task.attachments.length > 0 && (
-                <Image
-                    src={`https://pm-images-s3bucket.s3.us-east-1.amazonaws.com/${task.attachments[0].fileURL}`}
+                <SafeImage
+                    src={task.attachments[0].fileURL ? `/${task.attachments[0].fileURL}` : null}
                     alt={task.attachments[0].fileName}
                     width={400}
                     height={200}
-                    className="h-auto w-full rounded-t-lg object-cover"
+                    className="h-48 w-full rounded-t-lg object-cover"
                 />
             )}
             <div className='p-4 md:p-6'>
@@ -200,23 +200,27 @@ const Task = ({ task }: TaskProps) => {
                 <div className='mt-3 flex items-center justify-between'>
                     <div className='flex -space-x-1.5 overflow-hidden'>
                         {task.assignee && (
-                            <Image
+                            <SafeImage
                                 key={task.assignee.userId}
-                                src={`https://pm-images-s3bucket.s3.us-east-1.amazonaws.com/${task.assignee.profilePictureUrl}`}
+                                src={task.assignee.profilePictureUrl ? `/${task.assignee.profilePictureUrl}` : null}
                                 alt={task.assignee.username}
                                 width={30}
                                 height={30}
                                 className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-dark-secondary"
+                                fallbackLabel={task.assignee.username}
+                                variant="avatar"
                             />
                         )}
                         {task.author && (
-                            <Image
+                            <SafeImage
                                 key={task.author.userId}
-                                src={`https://pm-images-s3bucket.s3.us-east-1.amazonaws.com/${task.author.profilePictureUrl}`}
+                                src={task.author.profilePictureUrl ? `/${task.author.profilePictureUrl}` : null}
                                 alt={task.author.username}
                                 width={30}
                                 height={30}
                                 className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-dark-secondary"
+                                fallbackLabel={task.author.username}
+                                variant="avatar"
                             />
                         )}
                     </div>

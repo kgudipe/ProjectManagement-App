@@ -3,6 +3,7 @@ import {
   createTask,
   deleteTask,
   getTasks,
+  getTasksByPriority,
   getUserTasks,
   updateTask,
   updateTaskStatus,
@@ -10,6 +11,7 @@ import {
 import { validate } from "../middleware/validate.js";
 import {
   createTaskSchema,
+  priorityParamSchema,
   projectIdQuerySchema,
   taskIdParamSchema,
   updateStatusSchema,
@@ -21,6 +23,7 @@ const router = Router();
 
 router.get("/", validate({ query: projectIdQuerySchema }), getTasks);
 router.post("/", validate({ body: createTaskSchema }), createTask);
+router.get("/priority/:priority", validate({ params: priorityParamSchema }), getTasksByPriority);
 router.get("/user/:userId", validate({ params: userIdParamSchema }), getUserTasks);
 router.patch(
   "/:taskId/status",

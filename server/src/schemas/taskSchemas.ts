@@ -44,6 +44,10 @@ export const userIdParamSchema = z.object({
   userId: z.coerce.number().int().positive(),
 });
 
+export const priorityParamSchema = z.object({
+  priority: z.string().min(1).max(50),
+});
+
 export const projectIdQuerySchema = z.object({
   projectId: z.coerce.number().int().positive(),
 });

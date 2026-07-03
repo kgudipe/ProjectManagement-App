@@ -1,7 +1,7 @@
 import React from 'react'
 import { Task } from '@/state/api'
 import { format } from "date-fns"
-import Image from "next/image"
+import SafeImage from './SafeImage'
 
 type Props = {
     task: Task
@@ -15,12 +15,12 @@ const TaskCard = ({ task }: Props) => {
                     <strong className='text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400'>Attachments</strong>
                     <div className='flex flex-wrap'>
                         {task.attachments && task.attachments.length > 0 && (
-                            <Image
-                                src={`https://pm-images-s3bucket.s3.us-east-1.amazonaws.com/${task.attachments[0].fileURL}`}
+                            <SafeImage
+                                src={task.attachments[0].fileURL ? `/${task.attachments[0].fileURL}` : null}
                                 alt={task.attachments[0].fileName}
                                 width={400}
                                 height={200}
-                                className="mt-2 w-full rounded-lg object-cover"
+                                className="mt-2 h-48 w-full rounded-lg object-cover"
                             />
                         )}
                     </div>

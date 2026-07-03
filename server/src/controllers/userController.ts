@@ -20,7 +20,7 @@ export const getUser = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const postUser = asyncHandler(async (req: Request, res: Response) => {
-  const { username, cognitoId, profilePictureUrl = "i1.jpg", teamId } = req.body;
+  const { username, cognitoId, profilePictureUrl = "p1.jpeg", teamId } = req.body;
 
   const newUser = await prisma.user.create({
     data: {

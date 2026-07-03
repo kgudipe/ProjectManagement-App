@@ -116,3 +116,13 @@ export const getUserTasks = asyncHandler(async (req: Request, res: Response) => 
   });
   res.json(tasks);
 });
+
+export const getTasksByPriority = asyncHandler(async (req: Request, res: Response) => {
+  const priority = req.params.priority!;
+  const tasks = await prisma.task.findMany({
+    where: { priority },
+    include: { author: true, assignee: true, comments: true, attachments: true },
+    orderBy: { id: "asc" },
+  });
+  res.json(tasks);
+});
